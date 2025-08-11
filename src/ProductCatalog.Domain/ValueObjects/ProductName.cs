@@ -3,52 +3,52 @@ using SharedKernel.Exceptions;
 namespace ProductCatalog.Domain.ValueObjects;
 
 /// <summary>
-/// Value object representing a subject name with validation rules
+/// Value object representing a product name with validation rules
 /// </summary>
-public class SubjectName : ValueObject
+public class ProductName : ValueObject
 {
     public const int MaxLength = 200;
     private static readonly char[] InvalidCharacters = { '>', '<', '&', '"', '\'' };
 
     public string Value { get; private set; }
 
-    private SubjectName(string value)
+    private ProductName(string value)
     {
         Value = value;
     }
 
     /// <summary>
-    /// Creates a new SubjectName with validation
+    /// Creates a new ProductName with validation
     /// </summary>
-    /// <param name="value">The subject name value</param>
-    /// <returns>A valid SubjectName instance</returns>
+    /// <param name="value">The product name value</param>
+    /// <returns>A valid ProductName instance</returns>
     /// <exception cref="DomainValidationException">Thrown when validation fails</exception>
-    public static SubjectName Create(string value)
+    public static ProductName Create(string value)
     {
-        ValidateSubjectName(value);
-        return new SubjectName(value.Trim());
+        ValidateProductName(value);
+        return new ProductName(value.Trim());
     }
 
     /// <summary>
-    /// Validates a subject name value
+    /// Validates a product name value
     /// </summary>
     /// <param name="value">The value to validate</param>
     /// <exception cref="DomainValidationException">Thrown when validation fails</exception>
-    private static void ValidateSubjectName(string value)
+    private static void ValidateProductName(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
-            throw new DomainValidationException("Subject name cannot be empty");
+            throw new DomainValidationException("Product name cannot be empty");
         }
 
         if (value.Length > MaxLength)
         {
-            throw new DomainValidationException("Subject name cannot exceed {0} characters", MaxLength);
+            throw new DomainValidationException("Product name cannot exceed {0} characters", MaxLength);
         }
 
         if (ContainsInvalidCharacters(value))
         {
-            throw new DomainValidationException("Subject name contains invalid characters");
+            throw new DomainValidationException("Product name contains invalid characters");
         }
     }
 
@@ -61,31 +61,31 @@ public class SubjectName : ValueObject
     }
 
     /// <summary>
-    /// Tries to create a SubjectName without throwing exceptions
+    /// Tries to create a ProductName without throwing exceptions
     /// </summary>
-    /// <param name="value">The subject name value</param>
-    /// <param name="subjectName">The created SubjectName if successful</param>
+    /// <param name="value">The product name value</param>
+    /// <param name="productName">The created ProductName if successful</param>
     /// <returns>True if creation was successful, false otherwise</returns>
-    public static bool TryCreate(string value, out SubjectName? subjectName)
+    public static bool TryCreate(string value, out ProductName? productName)
     {
         try
         {
-            subjectName = Create(value);
+            productName = Create(value);
             return true;
         }
         catch (DomainValidationException)
         {
-            subjectName = null;
+            productName = null;
             return false;
         }
     }
 
     /// <summary>
-    /// Implicit conversion from SubjectName to string
+    /// Implicit conversion from ProductName to string
     /// </summary>
-    public static implicit operator string(SubjectName subjectName)
+    public static implicit operator string(ProductName productName)
     {
-        return subjectName.Value;
+        return productName.Value;
     }
 
     protected override IEnumerable<object> GetEqualityComponents()

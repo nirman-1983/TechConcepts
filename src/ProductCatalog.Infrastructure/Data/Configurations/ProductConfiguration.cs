@@ -6,13 +6,13 @@ using ProductCatalog.Domain.ValueObjects;
 namespace ProductCatalog.Infrastructure.Data.Configurations;
 
 /// <summary>
-/// Entity Framework configuration for Topic entity
+/// Entity Framework configuration for Product entity
 /// </summary>
-public class TopicConfiguration : IEntityTypeConfiguration<Topic>
+public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
-    public void Configure(EntityTypeBuilder<Topic> builder)
+    public void Configure(EntityTypeBuilder<Product> builder)
     {
-        builder.ToTable("Topics");
+        builder.ToTable("Products");
 
         builder.HasKey(t => t.Id);
 
@@ -20,15 +20,15 @@ public class TopicConfiguration : IEntityTypeConfiguration<Topic>
             .HasColumnName("ID")
             .ValueGeneratedOnAdd();
 
-        builder.Property(t => t.TopicName)
+        builder.Property(t => t.ProductName)
             .IsRequired()
             .HasMaxLength(200)
             .HasConversion(
                 v => v.Value,
-                v => TopicName.Create(v));
+                v => ProductName.Create(v));
 
-        builder.Property(t => t.SubjectId)
-            .HasColumnName("SubjectID")
+        builder.Property(t => t.ProductCategoryId)
+            .HasColumnName("ProductCategoryID")
             .IsRequired();
 
         builder.Property(t => t.CreatedDate)
@@ -42,14 +42,14 @@ public class TopicConfiguration : IEntityTypeConfiguration<Topic>
         builder.Property(t => t.ModifiedBy)
             .HasMaxLength(100);
 
-        // Unique constraint on TopicName and SubjectId combination
-        builder.HasIndex(t => new { t.TopicName, t.SubjectId })
+        // Unique constraint on ProductName and ProductCategoryId combination
+        builder.HasIndex(t => new { t.ProductName, t.ProductCategoryId })
             .IsUnique();
 
-        // Configure relationship with Subject
-        builder.HasOne(t => t.Subject)
-            .WithMany(s => s.Topics)
-            .HasForeignKey(t => t.SubjectId)
+        // Configure relationship with ProductCategory
+        builder.HasOne(t => t.ProductCategory)
+            .WithMany(s => s.Products)
+            .HasForeignKey(t => t.ProductCategoryId)
             .OnDelete(DeleteBehavior.Cascade);
 
         // Ignore domain events for EF Core

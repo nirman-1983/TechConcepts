@@ -6,13 +6,13 @@ using ProductCatalog.Domain.ValueObjects;
 namespace ProductCatalog.Infrastructure.Data.Configurations;
 
 /// <summary>
-/// Entity Framework configuration for Subject entity
+/// Entity Framework configuration for ProductCategory entity
 /// </summary>
-public class SubjectConfiguration : IEntityTypeConfiguration<Subject>
+public class ProductCategoryConfiguration : IEntityTypeConfiguration<ProductCategory>
 {
-    public void Configure(EntityTypeBuilder<Subject> builder)
+    public void Configure(EntityTypeBuilder<ProductCategory> builder)
     {
-        builder.ToTable("Subjects");
+        builder.ToTable("ProductCategories");
 
         builder.HasKey(s => s.Id);
 
@@ -20,12 +20,12 @@ public class SubjectConfiguration : IEntityTypeConfiguration<Subject>
             .HasColumnName("ID")
             .ValueGeneratedOnAdd();
 
-        builder.Property(s => s.SubjectName)
+        builder.Property(s => s.ProductCategoryName)
             .IsRequired()
             .HasMaxLength(200)
             .HasConversion(
                 v => v.Value,
-                v => SubjectName.Create(v));
+                v => ProductCategoryName.Create(v));
 
         builder.Property(s => s.CreatedDate)
             .IsRequired();
@@ -38,14 +38,14 @@ public class SubjectConfiguration : IEntityTypeConfiguration<Subject>
         builder.Property(s => s.ModifiedBy)
             .HasMaxLength(100);
 
-        // Unique constraint on SubjectName
-        builder.HasIndex(s => s.SubjectName)
+        // Unique constraint on ProductCategoryName
+        builder.HasIndex(s => s.ProductCategoryName)
             .IsUnique();
 
-        // Configure relationship with Topics
-        builder.HasMany(s => s.Topics)
-            .WithOne(t => t.Subject)
-            .HasForeignKey(t => t.SubjectId)
+        // Configure relationship with Products
+        builder.HasMany(s => s.Products)
+            .WithOne(t => t.ProductCategory)
+            .HasForeignKey(t => t.ProductCategoryId)
             .OnDelete(DeleteBehavior.Cascade);
 
         // Ignore domain events for EF Core

@@ -11,8 +11,8 @@ namespace ProductCatalog.Infrastructure.Data;
 /// </summary>
 public class ContentDbContext : DbContext, IUnitOfWork
 {
-    public DbSet<Subject> Subjects { get; set; }
-    public DbSet<Topic> Topics { get; set; }
+    public DbSet<ProductCategory> ProductCategories { get; set; }
+    public DbSet<Product> Products { get; set; }
 
     public ContentDbContext(DbContextOptions<ContentDbContext> options) : base(options)
     {
@@ -23,8 +23,8 @@ public class ContentDbContext : DbContext, IUnitOfWork
         base.OnModelCreating(modelBuilder);
 
         // Apply configurations
-        modelBuilder.ApplyConfiguration(new SubjectConfiguration());
-        modelBuilder.ApplyConfiguration(new TopicConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductCategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductConfiguration());
     }
 
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)

@@ -99,8 +99,8 @@ else
     builder.Services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ContentDbContext>());
 
 // Add repositories
-builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
-builder.Services.AddScoped<ITopicRepository, TopicRepository>();
+builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 // Add logging service
 builder.Services.AddScoped<ILoggingService, SerilogLoggingService>();
@@ -109,18 +109,18 @@ builder.Services.AddSingleton(Log.Logger);
 // Add MediatR
 builder.Services.AddMediatR(cfg =>
 {
-    cfg.RegisterServicesFromAssembly(typeof(CreateSubjectCommand).Assembly);
-    cfg.RegisterServicesFromAssembly(typeof(CreateSubjectCommandHandler).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(CreateProductCategoryCommand).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(CreateProductCategoryCommandHandler).Assembly);
 });
 
 // Add AutoMapper
 builder.Services.AddAutoMapper(typeof(ContentMappingProfile));
 
 // Add validators
-builder.Services.AddScoped<IAddSubjectRequestValidator, AddSubjectRequestValidator>();
-builder.Services.AddScoped<IUpdateSubjectRequestValidator, UpdateSubjectRequestValidator>();
-builder.Services.AddScoped<IAddTopicRequestValidator, AddTopicRequestValidator>();
-builder.Services.AddScoped<IUpdateTopicRequestValidator, UpdateTopicRequestValidator>();
+builder.Services.AddScoped<IAddProductCategoryRequestValidator, AddProductCategoryRequestValidator>();
+builder.Services.AddScoped<IUpdateProductCategoryRequestValidator, UpdateProductCategoryRequestValidator>();
+builder.Services.AddScoped<IAddProductRequestValidator, AddProductRequestValidator>();
+builder.Services.AddScoped<IUpdateProductRequestValidator, UpdateProductRequestValidator>();
 
 var app = builder.Build();
 

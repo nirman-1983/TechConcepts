@@ -11,19 +11,19 @@ public class ContentMappingProfile : Profile
 {
     public ContentMappingProfile()
     {
-        // Subject mappings
-        CreateMap<Subject, GetSubjectResponse>()
-            .ForMember(dest => dest.Topics, opt => opt.MapFrom(src => src.Topics ?? new List<Topic>()));
+        // ProductCategory mappings
+        CreateMap<ProductCategory, GetProductCategoryResponse>()
+            .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.Products ?? new List<Product>()));
 
-        CreateMap<AddSubjectRequest, Subject>()
-            .ConstructUsing(src => new Subject(src.SubjectName));
+        CreateMap<AddProductCategoryRequest, ProductCategory>()
+            .ConstructUsing(src => new ProductCategory(src.ProductCategoryName));
 
-        // Topic mappings
-        CreateMap<Topic, GetTopicResponse>()
-            .ForMember(dest => dest.SubjectName, opt => opt.MapFrom(src => src.Subject != null ? src.Subject.SubjectName : string.Empty));
+        // Product mappings
+        CreateMap<Product, GetProductResponse>()
+            .ForMember(dest => dest.ProductCategoryName, opt => opt.MapFrom(src => src.ProductCategory != null ? src.ProductCategory.ProductCategoryName : string.Empty));
 
-        CreateMap<AddTopicRequest, Topic>()
-            .ConstructUsing(src => new Topic(src.TopicName, src.SubjectId));
+        CreateMap<AddProductRequest, Product>()
+            .ConstructUsing(src => new Product(src.ProductName, src.ProductCategoryId));
 
     }
 }
