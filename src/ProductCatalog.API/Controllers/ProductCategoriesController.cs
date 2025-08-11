@@ -11,7 +11,7 @@ namespace ProductCatalog.API.Controllers;
 /// API Controller for ProductCategory management
 /// </summary>
 [ApiController]
-[Route("api/content/productCategories")]
+[Route("api/catalog/productCategories")]
 public class ProductCategoriesController : ControllerBase
 {
     private readonly IMediator _mediator;
