@@ -20,6 +20,5 @@ EXEC sp_addrolemember 'db_ddladmin', [service-principle-name];
 ```
 3. 'db_datawriter' rights on SQL Database (if migrations involve Data seeding)
 ```
-CREATE USER [service-principle-name] FROM EXTERNAL PROVIDER;
 EXEC sp_addrolemember 'db_ddladmin', [service-principle-name];
 ```
