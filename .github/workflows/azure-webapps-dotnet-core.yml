@@ -63,7 +63,7 @@ jobs:
           dotnet publish ${{ env.API_PROJECT_PATH }} \
           --configuration Release \
           --no-restore --no-build \
-          --property:PublishDir=${{ env.PUBLISH_DIR }}
+          --property:PublishDir=${{ github.workspace }}/${{ env.PUBLISH_DIR }}
 
       - name: Install EF Core CLI tool
         run: dotnet tool install --global dotnet-ef --version 9.0.0
