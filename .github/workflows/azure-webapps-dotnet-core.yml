@@ -43,9 +43,8 @@ jobs:
         with:
           path: |
             ~/.dotnet
-            **/bin
             **/obj
-          key: ${{ runner.os }}-dotnet-${{ hashFiles('**/*.csproj', '**/global.json') }}
+          key: ${{ runner.os }}-dotnet-obj-${{ hashFiles('**/*.csproj', '**/global.json') }}
           restore-keys: |
             ${{ runner.os }}-dotnet-
 
