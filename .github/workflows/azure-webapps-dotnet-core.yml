@@ -7,7 +7,6 @@ env:
   SOLUTION_PATH: "./src/ProductCatalog.sln"
   API_PROJECT_PATH: "./src/ProductCatalog.API/ProductCatalog.API.csproj"
   PUBLISH_DIR: "./publish"
-  ARTIFACTS_DIR: "./src/ProductCatalog.API/publish" # Artifacts will be picked from this directory
   DB_CONTEXT_NAME: "ContentDbContext"
   DB_PROVIDER: "SqlServer"
   
@@ -39,6 +38,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
+      - name: Cache .NET SDK and build outputs
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.dotnet
+            **/bin
+            **/obj
+          key: ${{ runner.os }}-dotnet-${{ hashFiles('**/*.csproj', '**/global.json') }}
+          restore-keys: |
+            ${{ runner.os }}-dotnet-
+
       - name: Build .NET Solution
         run: dotnet build ${{ env.SOLUTION_PATH }} --configuration Release
         
@@ -49,10 +59,13 @@ jobs:
           DatabaseProvider: "Sqlite"
         
       - name: Publish Artifacts
-        run: dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --no-restore --no-build --property:PublishDir=${{ env.PUBLISH_DIR }}
+        run: dotnet publish ${{ env.API_PROJECT_PATH }} \
+         --configuration Release \
+         --no-restore --no-build \
+         --property:PublishDir=${{ env.PUBLISH_DIR }}
 
       - name: Install EF Core CLI tool
-        run: dotnet tool install --global dotnet-ef
+        run: dotnet tool install --global dotnet-ef --version 9.0.0
           
       - name: Get public IP address
         id: ip
@@ -70,14 +83,19 @@ jobs:
           az sql server firewall-rule create \
             --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} \
             --server ${{ secrets.AZURE_SQL_SERVER }} \
-            --name 'GitHubActionsIP' \
+            --name ${{ github.run_id }} \
             --start-ip-address '${{ steps.ip.outputs.ipv4 }}' \
             --end-ip-address '${{ steps.ip.outputs.ipv4 }}'
         shell: bash
         id: add_firewall_rule
         
       - name: Apply Entity Framework Migrations
-        run: dotnet ef database update --project ProductCatalog.Infrastructure/ProductCatalog.Infrastructure.csproj --startup-project ProductCatalog.API/ProductCatalog.API.csproj --context ${{ env.DB_CONTEXT_NAME }}
+        run: | 
+          echo "::add-mask::${{ secrets.AZURE_SQL_CONNECTION_STRING }}"
+          dotnet ef database update 
+          --project ProductCatalog.Infrastructure/ProductCatalog.Infrastructure.csproj 
+          --startup-project ProductCatalog.API/ProductCatalog.API.csproj 
+          --context ${{ env.DB_CONTEXT_NAME }}
         working-directory: ./src/
         env:
           ConnectionStrings__DefaultConnection: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
@@ -97,7 +115,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{ env.ARTIFACTS_DIR }}
+          path: ${{ env.PUBLISH_DIR }}
 
   deploy:
     name: Deploy as Azure App
