@@ -93,9 +93,9 @@ jobs:
       - name: Apply Entity Framework Migrations
         run: | 
           echo "::add-mask::${{ secrets.AZURE_SQL_CONNECTION_STRING }}"
-          dotnet ef database update 
-          --project ProductCatalog.Infrastructure/ProductCatalog.Infrastructure.csproj 
-          --startup-project ProductCatalog.API/ProductCatalog.API.csproj 
+          dotnet ef database update \
+          --project ProductCatalog.Infrastructure/ProductCatalog.Infrastructure.csproj \
+          --startup-project ProductCatalog.API/ProductCatalog.API.csproj \
           --context ${{ env.DB_CONTEXT_NAME }}
         working-directory: ./src/
         env:
