@@ -20,3 +20,4 @@ EXEC sp_addrolemember 'db_ddladmin', [service-principle-name];
 EXEC sp_addrolemember 'db_datawriter', [service-principle-name];
 EXEC sp_addrolemember 'db_datareader', [service-principle-name];
 ```
+## GitHub cloning
